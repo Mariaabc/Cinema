@@ -1,0 +1,54 @@
+﻿<head>
+    <style>
+        .int-button {
+            border: 1px solid #000066;
+            border-radius: 5px;
+            background-color: white;
+            color: #000066;
+            height: 33px;
+        }
+
+            .int-button:hover {
+                background-color: #8080ff;
+                color: white;
+                height: 33px;
+            }
+    </style>
+
+</head>
+
+<body>
+
+    <h3>Edit the user:</h3> <br />
+
+    <form method="post" action="/User/Edit/@ViewBag.User.Id">
+        @Html.HttpMethodOverride(HttpVerbs.Put)
+
+        <label> User name: </label><br />
+        <input type="text" style="width: 600px;" name="UserName" value="@ViewBag.User.UserName" />
+        <br /><br /><br />
+
+        <label> Email: </label><br />
+        <input type="text" style="width: 600px;" name="Email" value="@ViewBag.User.Email" />
+        <br /><br /><br />
+
+        <label> PhoneNumber: </label><br />
+        <input type="text" style="width: 600px;" name="PhoneNumber" value="@ViewBag.User.PhoneNumber" />
+        <br /><br /><br />
+
+        <select name="Role">
+            @foreach (var d in ViewBag.UserRoles)
+            {
+                <option value="@d.Name">@d.Name</option>
+            }
+        </select>
+
+        <div style="padding-left:188px;">
+            <button class="int-button" type="submit">Edit the user</button>
+        </div>
+
+    </form>
+
+    <br /><br />
+
+</body>

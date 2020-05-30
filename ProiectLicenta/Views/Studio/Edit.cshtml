@@ -1,0 +1,142 @@
+﻿<head>
+    <style>
+        .image {
+            height: 80px;
+        }
+
+        .int-button {
+            border: 1px solid #000066;
+            border-radius: 5px;
+            background-color: white;
+            color: #000066;
+            height: 33px;
+        }
+
+            .int-button:hover {
+                background-color: #8080ff;
+                color: white;
+                height: 33px;
+            }
+
+        .delete-button {
+            border: 1px solid darkred;
+            border-radius: 5px;
+            background-color: white;
+            color: darkred;
+        }
+
+            .delete-button:hover {
+                background-color: indianred;
+                color: ghostwhite;
+            }
+
+        .add-button {
+            border: 1px solid #006622;
+            border-radius: 5px;
+            background-color: white;
+            color: #006622;
+        }
+
+            .add-button:hover {
+                background-color: #00b33c;
+                color: ghostwhite;
+            }
+
+        .a {
+            color: dimgrey;
+            font-weight: bold;
+        }
+
+        .title-div {
+            border-bottom: 1px solid darkgrey;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h2>Edit</h2>
+
+    <form method="post" action="/Studio/Edit/@ViewBag.Studio.Id">
+        @Html.HttpMethodOverride(HttpVerbs.Put)
+
+        <label>Name: </label><br />
+        <input type="text" style="width: 600px;" name="Name" value="@ViewBag.Studio.Name" />
+        <br /> <br />
+
+        <label> Description </label><br />
+        <textarea style="width: 600px;" rows="5" name="Description">@ViewBag.Studio.Description</textarea>
+        <br /><br />
+
+        <label> Logo Link: </label><br />
+        <input style="width: 600px;" type="text" name="Logo" value="@ViewBag.Studio.Logo" />
+        <br /><br />
+
+        <div style="padding-left:225px;">
+            <button class="int-button" type="submit">Modify</button>
+        </div>
+    </form>
+
+    <br /><br />
+
+    <h4><b>Movies created by @ViewBag.Studio.Name:</b></h4><br />
+
+    @foreach (var m in ViewBag.CurrentMovies)
+    {
+        <div class="card">
+            <div class="col-md-1">
+                <img class="image" class="card-img" src=@m.Image>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title"> <b> <a href="/Movie/Show/@m.Id"> @m.Name </a></b> </h5>
+
+                    <p class="card-text">@m.Description</p>
+                    <p class="card-text"> <small> Release date: @m.ReleaseDate.ToString() </small> </p>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <form method="post" action="/StudioMovie/Delete">
+                    <input name="Group" value="Studio" style="display:none" />
+                    <input name="StudioId" value="@ViewBag.Studio.Id" style="display:none" />
+                    <input name="MovieId" value="@m.Id" style="display:none" />
+                    <button class="btn delete-button" style="height:35px; width:80px;" type="submit">Delete</button>
+                </form> <br />
+            </div>
+        </div>
+        <br /><br /><br /><br /><br /><br />
+    }
+
+
+    <h4><b>Movies:</b></h4><br />
+
+    <div class="row">
+        @foreach (var m in ViewBag.Movies)
+        {
+            <div class="col-sm-4" style="height:100px;">
+                <div class="col-md-3">
+                    <img class="image" class="card-img" src=@m.Image>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card-body">
+                        <h5 class="card-title"> <b> <a href="/Movie/Show/@m.Id"> @m.Name </a> </b> </h5>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <form method="post" action="/StudioMovie/New">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <input name="Group" value="Studio" style="display:none" />
+                        <input name="MovieId" value="@m.Id" style="display:none" />
+                        <input name="StudioId" value="@ViewBag.Studio.Id" style="display:none" />
+                        <button class="add-button" type="submit">Add movie</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div> <br /><br />
+
+</body>

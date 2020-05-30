@@ -1,0 +1,97 @@
+﻿<head>
+    <style>
+        .image {
+            height: 80px;
+        }
+
+        .delete {
+            text-align: right;
+        }
+
+        .int-button {
+            border: 1px solid #000066;
+            border-radius: 5px;
+            background-color: white;
+            color: #000066;
+            height: 33px;
+        }
+
+            .int-button:hover {
+                background-color: #8080ff;
+                color: white;
+                height: 33px;
+            }
+
+        .delete-button {
+            border: 1px solid darkred;
+            border-radius: 5px;
+            background-color: white;
+            color: darkred;
+        }
+
+            .delete-button:hover {
+                background-color: indianred;
+                color: ghostwhite;
+            }
+    </style>
+
+</head>
+
+<body>
+
+    <h3>Edit</h3> <br />
+
+    <form method="post" action="/Genre/Edit/@ViewBag.Genre.Id">
+        @Html.HttpMethodOverride(HttpVerbs.Put)
+
+        <label>Name: </label><br />
+        <input type="text" style="width: 600px;" name="Name" value="@ViewBag.Genre.Name" />
+        <br /><br /><br />
+
+        <label> Description </label><br />
+        <textarea style="width: 600px;" rows="5" name="Description">@ViewBag.Genre.Description</textarea>
+        <br /><br />
+
+        <div style="padding-left:201px;">
+            <button class="int-button" type="submit">Edit genre</button>
+        </div>
+
+    </form>
+
+    <br /><br />
+
+    <h4><b>@ViewBag.Genre.Name movies:</b></h4> <br />
+
+
+    @foreach (var m in ViewBag.CurrentMovies)
+    {
+        <div class="card">
+            <div class="col-md-1">
+                <img class="image" class="card-img" src=@m.Image>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title"> <b> <a href="/Movie/Show/@m.Id"> @m.Name </a></b> </h5>
+
+                    <p class="card-text">@m.Description</p>
+                    <p class="card-text"> <small> Rerlease date: @m.ReleaseDate.ToString() </small> </p>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                @if (@User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+                {
+                    <form method="post" action="/GenreMovie/Delete">
+                        <input name="Group" value="Genre" style="display:none" />
+                        <input name="GenreId" value="@ViewBag.Genre.Id" style="display:none" />
+                        <input name="MovieId" value="@m.Id" style="display:none" />
+                        <button class="btn delete-button" style="height:35px; width:80px;" type="submit">Delete</button>
+                    </form> <br />
+                }
+            </div>
+        </div>
+        <br /><br /><br /><br /><br /><br />
+    }
+
+</body>

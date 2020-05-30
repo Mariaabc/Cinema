@@ -1,0 +1,142 @@
+﻿<head>
+    <style>
+        .image {
+            height: 80px;
+        }
+
+        .int-button {
+            border: 1px solid #000066;
+            border-radius: 5px;
+            background-color: white;
+            color: #000066;
+            height: 33px;
+        }
+
+            .int-button:hover {
+                background-color: #8080ff;
+                color: white;
+                height: 33px;
+            }
+
+        .delete-button {
+            border: 1px solid darkred;
+            border-radius: 5px;
+            background-color: white;
+            color: darkred;
+        }
+
+            .delete-button:hover {
+                background-color: indianred;
+                color: ghostwhite;
+            }
+
+        .add-button {
+            border: 1px solid #006622;
+            border-radius: 5px;
+            background-color: white;
+            color: #006622;
+        }
+
+            .add-button:hover {
+                background-color: #00b33c;
+                color: ghostwhite;
+            }
+
+        .a {
+            color: dimgrey;
+            font-weight: bold;
+        }
+
+        .title-div {
+            border-bottom: 1px solid darkgrey;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h3>Edit</h3>
+
+    <form method="post" action="/Actor/Edit/@ViewBag.Actor.Id">
+        @Html.HttpMethodOverride(HttpVerbs.Put)
+
+        <label>Name: </label><br />
+        <input type="text" style="width: 600px;" name="Name" value="@ViewBag.Actor.Name" />
+        <br /> <br />
+
+        <label> Description </label><br />
+        <textarea style="width: 600px;" rows="5" name="Description">@ViewBag.Actor.Description</textarea>
+        <br /><br />
+
+        <label> Image </label><br />
+        <input style="width: 600px;" type="text" name="Image" value="@ViewBag.Actor.Image" />
+        <br /><br />
+
+        <label> Birth date: </label>
+        <input type="text" name="BirthDate" value="@ViewBag.Actor.BirthDate" />
+        <br /><br />
+
+        <div style="padding-left:225px;">
+            <button class="int-button" type="submit">Modify</button>
+        </div>
+    </form>
+
+
+    <h4><b>The movies @ViewBag.Actor.Name played in:</b></h4><br />
+
+
+    <div class="row">
+        @foreach (var m in ViewBag.CurrentMovies)
+        {
+            <div class="col-sm-4" style="height:100px;">
+                <div class="col-md-3">
+                    <img class="image" class="card-img" src=@m.Movie.Image>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card-body">
+                        <h5 class="card-title"> <b> <a href="/Movie/Show/@m.MovieId"> @m.Movie.Name </a> </b> <br />@m.CharacterName <br /> @m.Role </h5>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <form method="post" action="/ActorMovie/Delete">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <input name="Group" value="Actor" style="display:none" />
+                        <input name="ActorId" value="@ViewBag.Actor.Id" style="display:none" />
+                        <input name="MovieId" value="@m.Movie.Id" style="display:none" />
+                        <button class="delete-button" type="submit">Delete movie</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div> <br /><br />
+
+
+    <h4> Add movies: </h4>
+
+    @foreach (var m in ViewBag.Movies)
+    {
+        <div class="col-sm-4" style="height:100px;">
+            <div class="col-md-3">
+                <img class="image" class="card-img" src=@m.Image>
+            </div>
+
+            <div class="col-md-5">
+                <div class="card-body">
+                    <h5 class="card-title"> <b> <a href="/Movie/Show/@m.Id"> @m.Name </a> </b> </h5>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <a href="/ActorMovie/New/?MovieId=@m.Id&ActorId=@ViewBag.Actor.Id&Group=Actor">
+                    <button class="add-button">Add movie</button>
+                </a>
+            </div>
+        </div>
+    }
+    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+
+
+</body>

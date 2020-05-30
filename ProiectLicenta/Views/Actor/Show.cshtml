@@ -1,0 +1,199 @@
+﻿<head>
+    <style>
+        .image {
+            height: 50px;
+        }
+
+        .ChildComment {
+            padding-left: 5%;
+            display: block;
+            visibility: visible;
+        }
+
+        #img {
+            padding-right: 0;
+            height: 300px;
+        }
+
+        .int-button {
+            border: 1px solid #000066;
+            border-radius: 5px;
+            background-color: white;
+            color: #000066;
+            height: 33px;
+        }
+
+            .int-button:hover {
+                background-color: #8080ff;
+                color: white;
+                height: 33px;
+            }
+
+        .search-button {
+            border: 1px solid #000066;
+            background-color: white;
+            color: #000066;
+            height: 26px;
+        }
+
+            .search-button:hover {
+                background-color: #8080ff;
+                color: ghostwhite;
+            }
+
+        .delete-button {
+            border: 1px solid darkred;
+            border-radius: 5px;
+            background-color: white;
+            color: darkred;
+        }
+
+            .delete-button:hover {
+                background-color: indianred;
+                color: ghostwhite;
+            }
+
+        table, th, td {
+            text-align: center;
+            padding-right: 30px;
+            padding-left: 30px;
+            border-collapse: collapse;
+        }
+    </style>
+
+    <script>
+        function newRating(i) {
+            for (var j = 1; j <= i; j++) {
+                var img = document.getElementById(j);
+                img.src = "https://image.shutterstock.com/image-illustration/golden-star-3d-render-260nw-716345209.jpg";
+            }
+            for (var j = i+1; j <= 10; j++) {
+                var img = document.getElementById(j);
+                img.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png";
+            }
+        }
+
+        function oldRating(i) {
+            for (var j = 1; j <= @ViewBag.UserRating; j++) {
+                var img = document.getElementById(j);
+                img.src = "https://image.shutterstock.com/image-illustration/golden-star-3d-render-260nw-716345209.jpg";
+            }
+            for (var j = @ViewBag.UserRating+1; j <= 10; j++) {
+                var img = document.getElementById(j);
+                img.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png";
+            }
+
+
+        }
+    </script>
+
+</head>
+
+
+<body>
+    <h3><b>@ViewBag.Actor.Name</b></h3>
+    @if (@User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+    {
+        <a type="button" class="btn int-button" href="/Actor/Edit/@ViewBag.Actor.Id">Edit the actor</a>
+    }
+    <img id="img" align="right" src=@ViewBag.Actor.Image> <br /><br />
+
+    <h5> Your rating: </h5>
+    @for (var i = 1; i <= @ViewBag.UserRating; i++)
+    {
+        <a href="/Rating/NewA/?UserId=@ViewBag.Userid&ActorId=@ViewBag.Actor.Id&Actor=@ViewBag.Actor&RatingType=@ViewBag.Actor.Id&Value=@i">
+            <img id="@i" onmouseover="newRating(@i)" onmouseout="oldRating(@i)" src="https://image.shutterstock.com/image-illustration/golden-star-3d-render-260nw-716345209.jpg" alt="Smiley face" height="20" width="20">
+        </a>
+    }
+
+    @for (var i = @ViewBag.UserRating + 1; i <= 10; i++)
+    {
+        <a href="/Rating/NewA/?UserId=@ViewBag.Userid&ActorId=@ViewBag.Actor.Id&Actor=@ViewBag.Actor&RatingType=@ViewBag.Actor.Id&Value=@i">
+            <img id="@i" onmouseover="newRating(@i)" onmouseout="oldRating(@i)" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png" alt="Smiley face" height="20" width="20">
+        </a>
+    }
+    <h5> The average rating is @ViewBag.AverageRating / 10  </h5>
+
+    <br />
+    <h5>@ViewBag.Actor.Description</h5>
+    <br /><br />
+
+
+    <h4><b>Movies @ViewBag.Actor.Name played in:</b></h4><br />
+
+    <table>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>CharacterName</th>
+        </tr>
+
+        @foreach (var m in ViewBag.Movies)
+        {
+            <tr>
+                <td> <img class="image" src=@m.Movie.Image> </td>
+                <td> <a href="/Movie/Show/@m.Movie.Id">@m.Movie.Name</a>(@m.Movie.ReleaseDate.Year.ToString()) </td>
+                <td> <h5>@m.Role</h5> </td>
+                <td> <h5>@m.CharacterName</h5> </td>
+            </tr>
+        }
+    </table>
+    <br /><br /><br />
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form method="post" action="/Comment/New">
+            <input name="Group" value="Actor" style="display:none" />
+            <input name="IdGroup" value=@ViewBag.Actor.Id style="display:none" />
+            <label>Add a comment: </label>
+            <input type="text" style="width: 600px;" name="Text" />
+            <button class="search-button" type="submit">Add</button>
+        </form> <br /><br />
+    }
+
+    @foreach (var a in ViewBag.Comments)
+    {
+        <div class="Comment">
+            <b>@a.CurentUserName</b><br />
+            @a.Text <br />
+            <small> at @a.DT </small>
+            @if (@a.UserId.Equals(a.CurentUser) || @User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+            {
+                <div class="delete-button" style="font-size:small;height:21px; width:50px;">
+                    <a style="padding-left:5px;padding-top:4px;color:darkred;" href="/Comment/Delete/@a.Id">Delete</a>
+                </div>
+            }
+            <br />
+        </div>
+        foreach (var c in @ViewBag.ChildComments)
+        {
+            if (@c.IdParent == @a.Id)
+            {
+                <div class="ChildComment">
+                    <b>@c.CurentUserName</b> <br />
+                    @c.Text <br />
+                    <small> at @c.DT </small>
+                    @if (@c.UserId.Equals(c.CurentUser) || @User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+                    {
+                        <div class="delete-button" style="font-size:small;height:21px; width:50px;">
+                            <a style="padding-left:5px;padding-top:4px;color:darkred;" href="/Comment/Delete/@c.Id">Delete</a>
+                        </div>
+                    }<br />
+                </div>
+            }
+        }
+        if (User.Identity.IsAuthenticated)
+        {
+            <form class="ChildComment" method="post" action="/Comment/New">
+                <input name="Group" value="Actor" style="display:none" />
+                <input name="IdGroup" value=@ViewBag.Actor.Id style="display:none" />
+                <input name="IdParent" value=@a.Id style="display:none" />
+                <input type="text" style="width: 600px;" name="Text" />
+                <button class="search-button" type="submit">Add</button>
+            </form>
+            <br /><br />
+        }
+    }
+
+</body>

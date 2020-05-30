@@ -1,0 +1,113 @@
+﻿<head>
+    <style>
+        .image {
+            height: 80px;
+            width: 55px;
+            object-fit: cover;
+        }
+
+        .int-button {
+            border: 1px solid #000066;
+            border-radius: 5px;
+            background-color: white;
+            color: #000066;
+            height: 33px;
+        }
+
+            .int-button:hover {
+                background-color: #8080ff;
+                color: white;
+                height: 33px;
+            }
+
+        .delete-button {
+            border: 1px solid darkred;
+            border-radius: 5px;
+            background-color: white;
+            color: darkred;
+        }
+
+            .delete-button:hover {
+                background-color: indianred;
+                color: ghostwhite;
+            }
+
+        .search-button {
+            border: 1px solid #000066;
+            background-color: white;
+            color: #000066;
+            height: 26px;
+        }
+
+            .search-button:hover {
+                background-color: #8080ff;
+                color: ghostwhite;
+            }
+
+        .a {
+            color: dimgrey;
+            font-weight: bold;
+        }
+
+        .title-div {
+            border-bottom: 1px solid darkgrey;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h3>Actors:</h3> <br />
+
+    @if (@User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+    {
+        <a role="button" class="btn int-button" href="/Actor/New">Add another actor</a> <br />
+    } <br />
+
+    <form method="post" action="/Actor/Search">
+        <input type="text" name="KeyWord" />
+        <button class="search-button" type="submit">Search</button>
+    </form> <br /><br />
+
+    @foreach (var a in ViewBag.Actors)
+    {
+        <div class="card">
+            <div class="col-md-1">
+                <img class="image" class="card-img" src=@a.Image>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title"> <b> <a href="/Actor/Show/@a.Id"> @a.Name </a></b> (@a.BirthDate.Year.ToString()) </h5>
+
+                    <p class="card-text">@a.Description</p>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (@a.UserRating != 0)
+                        {
+                            <p class="card-text"> <small> Your rating is @a.UserRating while the average was @a.AverageRating</small> </p>
+                        }
+                        else
+                        {
+                            <p class="card-text"> <small> The average rating is @a.AverageRating</small> </p>
+                        }
+                    }
+                    else
+                    {
+                        <p class="card-text"> <small> The average rating is @a.AverageRating</small> </p>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                @if (@User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+                {
+                    <a role="button" class="btn delete-button" style="height:35px; width:80px;" href="/Movie/Delete/@a.Id">Delete</a> <br />
+                }
+            </div>
+        </div>
+        <br /><br /><br /><br /><br /><br />
+    }
+
+</body>

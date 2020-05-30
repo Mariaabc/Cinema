@@ -1,0 +1,183 @@
+﻿<head>
+    <style>
+        .image {
+            height: 80px;
+        }
+
+        .int-button {
+            border: 1px solid #000066;
+            border-radius: 5px;
+            background-color: white;
+            color: #000066;
+            height: 33px;
+        }
+
+            .int-button:hover {
+                background-color: #8080ff;
+                color: white;
+                height: 33px;
+            }
+
+        .delete-button {
+            border: 1px solid darkred;
+            border-radius: 5px;
+            background-color: white;
+            color: darkred;
+        }
+
+            .delete-button:hover {
+                background-color: indianred;
+                color: ghostwhite;
+            }
+
+        .search-button {
+            border: 1px solid #000066;
+            background-color: white;
+            color: #000066;
+            height: 26px;
+        }
+
+            .search-button:hover {
+                background-color: #8080ff;
+                color: ghostwhite;
+            }
+
+        .a {
+            color: dimgrey;
+            font-weight: bold;
+        }
+
+        .title-div {
+            border-bottom: 1px solid darkgrey;
+        }
+
+        .split_left {
+            height: 100%;
+            width: 16%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            overflow-x: hidden;
+            padding-top: 40px;
+            left: 0px;
+            align-items: center;
+            border-right: 1px solid darkgrey;
+        }
+
+        .split_right {
+            height: 100%;
+            width: 82%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            overflow-x: hidden;
+            padding-top: 40px;
+            right: 0;
+        }
+    </style>
+
+    <script>
+
+
+    </script>
+</head>
+
+<body>
+
+    <div class="split_left">
+
+        <div class="title-div">
+            <h2 align="center"> Genres: </h2>
+
+            <div align="center">
+                @if (@User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+                {
+                    <a role="button" class="btn int-button" href="/Genre/New">Add another genre</a> <br />
+                } <br />
+            </div><br />
+        </div>
+
+        <br /><br />
+
+        @foreach (var genre in ViewBag.Genres)
+        {
+            <div class="card border-light mb-3">
+                <div class="col-md-7">
+                    <a class="a" href="/Genre/Show/@genre.Id">@genre.Name</a>
+                </div>
+
+                <div class="col-md-3">
+                    @if (@User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+                    {
+                        <div class="delete-button" style="font-size:small;height:21px; width:50px;">
+                            <a style="padding-left:5px;padding-top:4px;color:darkred;" href="/Genre/Delete/@genre.Id">Delete</a>
+                        </div> <br />
+                    }
+                </div>
+            </div> <br /> <br />
+        }
+
+    </div>
+
+
+    <div class="split_right">
+
+        <h3>Search by "@ViewBag.KeyWord"</h3> <br />
+
+        @if (@User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+        {
+            <a role="button" class="btn int-button" href="/Movie/New">Add another movie</a>
+        }
+
+        <a type="button" class="btn int-button" href="/Movie/Index">Back to all movies</a>
+
+        <br /> <br />
+
+        <form method="post" action="/Movie/Search">
+            <input type="text" name="KeyWord" />
+            <button class="search-button" type="submit">Search</button>
+        </form> <br /><br />
+
+        @foreach (var m in ViewBag.Movies)
+        {
+            <div class="card">
+                <div class="col-md-1">
+                    <img class="image" class="card-img" src=@m.Image>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"> <b> <a href="/Movie/Show/@m.Id"> @m.Name </a></b>  - @m.ReleaseDate.Year.ToString() </h5>
+
+                        <p class="card-text">@m.Description</p>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            if (@m.UserRating != 0)
+                            {
+                                <p class="card-text"> <small> Your rating is @m.UserRating while the average was @m.AverageRating</small> </p>
+                            }
+                            else
+                            {
+                                <p class="card-text"> <small> The average rating is @m.AverageRating</small> </p>
+                            }
+                        }
+                        else
+                        {
+                            <p class="card-text"> <small> The average rating is @m.AverageRating</small> </p>
+                        }
+                    </div>
+                </div>
+
+                <div class="col-md-1">
+                    @if (@User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+                    {
+                        <a role="button" class="btn delete-button" style="height:35px; width:80px;" href="/Movie/Delete/@m.Id">Delete</a> <br />
+                    }
+                </div>
+            </div>
+            <br /><br /><br /><br /><br /><br />
+        }
+
+    </div>
+</body>

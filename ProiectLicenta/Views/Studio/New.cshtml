@@ -1,0 +1,42 @@
+﻿<head>
+    <style>
+        .int-button {
+            border: 1px solid #000066;
+            border-radius: 5px;
+            background-color: white;
+            color: #000066;
+            height: 33px;
+        }
+
+            .int-button:hover {
+                background-color: #8080ff;
+                color: white;
+                height: 33px;
+            }
+    </style>
+</head>
+
+<body>
+
+    <h2>New studio</h2> <br />
+
+    <form method="post" action="/Studio/New">
+
+        <label>Name</label><br />
+        <input type="text" style="width: 600px;" name="Name" />
+        <br /><br />
+
+        <label> Description </label><br />
+        <textarea style="width: 600px;" rows="5" name="Description"></textarea>
+        <br /><br />
+
+        <label> Logo </label><br />
+        <input type="text" style="width: 600px;" name="Logo" />
+        <br /><br />
+
+        <div style="padding-left:200px;">
+            <button class="int-button" type="submit">Add studio</button>
+        </div>
+    </form>
+
+</body>

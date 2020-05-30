@@ -1,0 +1,150 @@
+﻿<head>
+    <style>
+        .image {
+            height: 80px;
+        }
+
+        .delete {
+            text-align: right;
+        }
+
+        .int-button {
+            border: 1px solid #000066;
+            border-radius: 5px;
+            background-color: white;
+            color: #000066;
+            height: 33px;
+        }
+
+            .int-button:hover {
+                background-color: #8080ff;
+                color: white;
+                height: 33px;
+            }
+
+        .delete-button {
+            border: 1px solid darkred;
+            border-radius: 5px;
+            background-color: white;
+            color: darkred;
+        }
+
+            .delete-button:hover {
+                background-color: indianred;
+                color: ghostwhite;
+            }
+
+        .search-button {
+            border: 1px solid #000066;
+            background-color: white;
+            color: #000066;
+            height: 26px;
+        }
+
+            .search-button:hover {
+                background-color: #8080ff;
+                color: ghostwhite;
+            }
+
+        .ChildComment {
+            padding-left: 5%;
+            display: block;
+            visibility: visible;
+        }
+
+        #img {
+            padding-right: 0;
+            height: 200px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h3><b>@ViewBag.Studio.Name</b></h3>
+
+    <div>
+        <img id="img" align="right" src=@ViewBag.Studio.Logo> <br />
+        @if (@User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+        {
+            <a type="button" class="btn int-button" href="/Studio/Edit/@ViewBag.Studio.Id">Modify</a><br /><br />
+        }
+        <h5>@ViewBag.Studio.Description</h5> <br />
+    </div><br /><br />
+
+    <h4><b>Movies created by @ViewBag.Studio.Name:</b></h4><br />
+    @foreach (var m in ViewBag.Movies)
+    {
+        <div class="card">
+            <div class="col-md-1">
+                <img class="image" class="card-img" src=@m.Image>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title"> <b> <a href="/Movie/Show/@m.Id"> @m.Name </a></b> </h5>
+
+                    <p class="card-text">@m.Description</p>
+                    <p class="card-text"> <small> Release date: @m.ReleaseDate.ToString() </small> </p>
+                </div>
+            </div>
+        </div>
+        <br /><br /><br /><br /><br /><br />
+    } <br /> <br />
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form method="post" action="/Comment/New">
+            <input name="Group" value="Studio" style="display:none" />
+            <input name="IdGroup" value=@ViewBag.Studio.Id style="display:none" />
+            <label>Add a comment: </label>
+            <input type="text" style="width: 600px;" name="Text" />
+            <button class="search-button" type="submit">Add</button>
+        </form> <br /><br />
+    }
+
+    @foreach (var a in ViewBag.Comments)
+    {
+        <div class="Comment">
+            <b>@a.CurentUserName</b><br />
+            @a.Text <br />
+            <small> at @a.DT </small>
+            @if (@a.UserId.Equals(a.CurentUser) || @User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+            {
+                <div class="delete-button" style="font-size:small;height:21px; width:50px;">
+                    <a style="padding-left:5px;padding-top:4px;color:darkred;" href="/Comment/Delete/@a.Id">Delete</a>
+                </div>
+            }
+            <br />
+        </div>
+        foreach (var c in @ViewBag.ChildComments)
+        {
+            if (@c.IdParent == @a.Id)
+            {
+                <div class="ChildComment">
+                    <b>@c.CurentUserName</b> <br />
+                    @c.Text <br />
+                    <small> at @c.DT </small>
+                    @if (@c.UserId.Equals(c.CurentUser) || @User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+                    {
+                        <div class="delete-button" style="font-size:small;height:21px; width:50px;">
+                            <a style="padding-left:5px;padding-top:4px;color:darkred;" href="/Comment/Delete/@c.Id">Delete</a>
+                        </div>
+                    }<br />
+                </div>
+            }
+        }
+        if (User.Identity.IsAuthenticated)
+        {
+            <form class="ChildComment" method="post" action="/Comment/New">
+                <input name="Group" value="Studio" style="display:none" />
+                <input name="IdGroup" value=@ViewBag.Studio.Id style="display:none" />
+                <input name="IdParent" value=@a.Id style="display:none" />
+                <input type="text" style="width: 600px;" name="Text" />
+                <button class="search-button" type="submit">Add</button>
+            </form>
+            <br /><br />
+        }
+    }
+</body>

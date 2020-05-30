@@ -1,0 +1,79 @@
+﻿<head>
+    <style>
+        .image {
+            height: 80px;
+        }
+
+        .int-button {
+            border: 1px solid #000066;
+            border-radius: 5px;
+            background-color: white;
+            color: #000066;
+            height: 33px;
+        }
+
+            .int-button:hover {
+                background-color: #8080ff;
+                color: white;
+                height: 33px;
+            }
+    </style>
+
+</head>
+
+<body>
+    <h2>Add</h2>
+
+    <div class="card">
+        <div class="col-md-1">
+            <img class="image" class="card-img" src=@ViewBag.Movie.Image>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title"> <b> <a href="/Movie/Show/@ViewBag.Movie.Id"> @ViewBag.Movie.Name </a></b> (@ViewBag.Movie.ReleaseDate.Year.ToString()) </h5>
+
+                <p class="card-text">@ViewBag.Movie.Description</p>
+
+            </div>
+        </div>
+    </div>
+    <br /><br /><br /><br /><br /><br />
+
+
+
+    <div class="card">
+        <div class="col-md-1">
+            <img class="image" class="card-img" src=@ViewBag.Actor.Image>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title"> <b> <a href="/Actor/Show/@ViewBag.Actor.Id"> @ViewBag.Actor.Name </a></b> (@ViewBag.Actor.BirthDate.Year.ToString()) </h5>
+
+                <p class="card-text">@ViewBag.Actor.Description</p>
+            </div>
+        </div>
+
+    </div>
+    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+
+
+    <form method="post" action="/ActorMovie/New">
+        <input value="@ViewBag.Group" name="Group" style="display:none" />
+        <input name="ActorId" value="@ViewBag.Actor.Id" style="display:none" />
+        <input name="MovieId" value="@ViewBag.Movie.Id" style="display:none" />
+
+        <label>Role: </label><br />
+        <input type="text" style="width: 600px;" name="Role" />
+        <br /> <br />
+
+        <label>Character name: </label><br />
+        <input type="text" style="width: 600px;" name="CharacterName" />
+        <br /> <br />
+
+        <div style="padding-left:225px;">
+            <button class="int-button" type="submit">Add</button>
+        </div>
+    </form>
+</body>

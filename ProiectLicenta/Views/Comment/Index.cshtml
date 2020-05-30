@@ -1,0 +1,97 @@
+﻿<head>
+    <style>
+        .delete-button {
+            border: 1px solid darkred;
+            border-radius: 5px;
+            background-color: white;
+            color: darkred;
+        }
+
+            .delete-button:hover {
+                background-color: indianred;
+                color: ghostwhite;
+            }
+
+        .search-button {
+            border: 1px solid #000066;
+            background-color: white;
+            color: #000066;
+            height: 26px;
+        }
+
+            .search-button:hover {
+                background-color: #8080ff;
+                color: ghostwhite;
+            }
+
+        .ChildComment {
+            padding-left: 5%;
+            display: block;
+            visibility: visible;
+        }
+    </style>
+</head>
+
+<body>
+    <br />
+    <h4><b>What movie would you wish to see?</b></h4> <br />
+    <h4>
+        Here you can propose a movie, or a movie cathegory or a genre, and if enough people agree that movie will
+        be televized. <br />
+        Malicious comments will be deleted.
+    </h4> <br />
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form method="post" action="/Comment/New">
+            <input name="Group" value="Wish" style="display:none" />
+            <label>Add a comment: </label>
+            <input type="text" style="width: 600px;" name="Text" />
+            <button class="search-button" type="submit">Add</button>
+        </form> <br /><br />
+    }
+    @foreach (var a in ViewBag.Comments)
+    {
+        <div class="Comment">
+            <b>@a.CurentUserName</b><br />
+            @a.Text <br />
+            <small> at @a.DT </small>
+            @if (@a.UserId.Equals(a.CurentUser) || @User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+            {
+                <div class="delete-button" style="font-size:small;height:21px; width:50px;">
+                    <a style="padding-left:5px;padding-top:4px;color:darkred;" href="/Comment/Delete/@a.Id">Delete</a>
+                </div>
+            }
+            <br />
+        </div>
+        foreach (var c in @ViewBag.ChildComments)
+        {
+            if (@c.IdParent == @a.Id)
+            {
+                <div class="ChildComment">
+                    <b>@c.CurentUserName</b> <br />
+                    @c.Text <br />
+                    <small> at @c.DT </small>
+                    @if (@c.UserId.Equals(c.CurentUser) || @User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+                    {
+                        <div class="delete-button" style="font-size:small;height:21px; width:50px;">
+                            <a style="padding-left:5px;padding-top:4px;color:darkred;" href="/Comment/Delete/@c.Id">Delete</a>
+                        </div>
+                    }<br />
+                </div>
+            }
+        }
+        if (User.Identity.IsAuthenticated)
+        {
+            <form class="ChildComment" method="post" action="/Comment/New">
+                <input name="Group" value="Wish" style="display:none" />
+                <input name="IdParent" value=@a.Id style="display:none" />
+                <input type="text" style="width: 600px;" name="Text" />
+                <button class="search-button" type="submit">Add</button>
+            </form>
+            <br /><br />
+        }
+    }
+
+
+</body>

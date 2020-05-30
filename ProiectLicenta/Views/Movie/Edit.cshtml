@@ -1,0 +1,318 @@
+﻿<head>
+    <style>
+        .image {
+            height: 80px;
+        }
+
+        .int-button {
+            border: 1px solid #000066;
+            border-radius: 5px;
+            background-color: white;
+            color: #000066;
+            height: 33px;
+        }
+
+            .int-button:hover {
+                background-color: #8080ff;
+                color: white;
+                height: 33px;
+            }
+
+        .delete-button {
+            border: 1px solid darkred;
+            border-radius: 5px;
+            background-color: white;
+            color: darkred;
+        }
+
+            .delete-button:hover {
+                background-color: indianred;
+                color: ghostwhite;
+            }
+
+        .add-button {
+            border: 1px solid #006622;
+            border-radius: 5px;
+            background-color: white;
+            color: #006622;
+        }
+
+            .add-button:hover {
+                background-color: #00b33c;
+                color: ghostwhite;
+            }
+
+        .a {
+            color: dimgrey;
+            font-weight: bold;
+        }
+
+        .title-div {
+            border-bottom: 1px solid darkgrey;
+        }
+    </style>
+
+    <script>
+        function myFunction(a) {
+            document.getElementById("ActorId").value = a;
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <h3>Edit</h3>
+
+    <form method="post" action="/Movie/Edit/@ViewBag.Movie.Id">
+        @Html.HttpMethodOverride(HttpVerbs.Put)
+
+        <label>Name: </label><br />
+        <input type="text" style="width: 600px;" name="Name" value="@ViewBag.Movie.Name" />
+        <br /> <br />
+
+        <label> Description </label><br />
+        <textarea style="width: 600px;" rows="5" name="Description">@ViewBag.Movie.Description</textarea>
+        <br /><br />
+
+        <label> Image </label><br />
+        <input style="width: 600px;" type="text" name="Image" value="@ViewBag.Movie.Image" />
+        <br /><br />
+
+        <label> YouTube link trailer </label><br />
+        <input style="width: 600px;" type="text" name="YTTrailerLink" value="@ViewBag.Movie.YTTrailerLink" />
+        <br /><br />
+
+        <label> Release date: </label>
+        <input type="text" name="ReleaseDate" value="@ViewBag.Movie.ReleaseDate" />
+        <br /><br />
+
+        <div style="padding-left:225px;">
+            <button class="int-button" type="submit">Modify</button>
+        </div>
+    </form>
+
+
+    <br /><br />
+
+    <h4><b>Movie genres:</b></h4><br />
+
+    <div class="row">
+        @foreach (var genre in ViewBag.Genres)
+        {
+            <div class="col-sm-3" style="height:40px;">
+                <div class="col-sm-4">
+                    <a class="a" href="/Genre/Show/@genre.Id">@genre.Name</a>
+                </div>
+                <div class="col-sm-6">
+                    <form method="post" action="/GenreMovie/New">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <input name="Group" value="Movie" style="display:none" />
+                        <input name="MovieId" value="@ViewBag.Movie.Id" style="display:none" />
+                        <input name="GenreId" value="@genre.Id" style="display:none" />
+                        <button class="add-button" type="submit">Add genre</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div> <br /><br />
+
+
+    <h4><b>Genres belonging to this movie:</b></h4><br />
+
+    <div class="row">
+        @foreach (var genre in ViewBag.CurrentGenres)
+        {
+            <div class="col-sm-3" style="height:40px;">
+                <div class="col-sm-4">
+                    <a class="a" href="/Genre/Show/@genre.Id">@genre.Name</a>
+                </div>
+                <div class="col-sm-6">
+                    <form method="post" action="/GenreMovie/Delete">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <input name="Group" value="Movie" style="display:none" />
+                        <input name="MovieId" value="@ViewBag.Movie.Id" style="display:none" />
+                        <input name="GenreId" value="@genre.Id" style="display:none" />
+                        <button class="delete-button" type="submit">Delete</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div> <br /><br />
+
+    <h4><b>Movie directors:</b></h4><br />
+
+    <div class="row">
+        @foreach (var director in ViewBag.Directors)
+        {
+            <div class="col-sm-4" style="height:100px;">
+                <div class="col-md-3">
+                    <img class="image" class="card-img" src=@director.Img>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card-body">
+                        <h5 class="card-title"> <b> <a href="/Director/Show/@director.Id"> @director.Name </a></b> </h5>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <form method="post" action="/DirectorMovie/New">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <input name="Group" value="Movie" style="display:none" />
+                        <input name="MovieId" value="@ViewBag.Movie.Id" style="display:none" />
+                        <input name="DirectorId" value="@director.Id" style="display:none" />
+                        <button class="add-button" type="submit">Add director</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div> <br /><br />
+
+
+    <h4><b>Filmmakers who directed @ViewBag.Movie.Name:</b></h4><br />
+
+    <div class="row">
+        @foreach (var director in ViewBag.CurrentDirectors)
+        {
+            <div class="col-sm-4" style="height:100px;">
+                <div class="col-md-3">
+                    <img class="image" class="card-img" src=@director.Img>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card-body">
+                        <h5 class="card-title"> <b> <a href="/Director/Show/@director.Id"> @director.Name </a></b> </h5>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <form method="post" action="/DirectorMovie/Delete">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <input name="Group" value="Movie" style="display:none" />
+                        <input name="MovieId" value="@ViewBag.Movie.Id" style="display:none" />
+                        <input name="DirectorId" value="@director.Id" style="display:none" />
+                        <button class="delete-button" type="submit">Delete director</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div> <br /><br />
+
+
+
+    <h4><b>Movie studios:</b></h4><br />
+
+    <div class="row">
+        @foreach (var studio in ViewBag.Studios)
+        {
+            <div class="col-sm-4" style="height:100px;">
+                <div class="col-md-6">
+                    <img class="image" class="card-img" src=@studio.Logo>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card-body">
+                        <h5 class="card-title"> <b> <a href="/Studio/Show/@studio.Id"> @studio.Name </a></b> </h5>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <form method="post" action="/StudioMovie/New">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <input name="Group" value="Movie" style="display:none" />
+                        <input name="MovieId" value="@ViewBag.Movie.Id" style="display:none" />
+                        <input name="StudioId" value="@studio.Id" style="display:none" />
+                        <button class="add-button" type="submit">Add studio</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div> <br /><br />
+
+
+
+    <h4><b>Studios who created @ViewBag.Movie.Name:</b></h4><br />
+
+    <div class="row">
+        @foreach (var studio in ViewBag.CurrentStudios)
+        {
+            <div class="col-sm-4" style="height:100px;">
+                <div class="col-md-6">
+                    <img class="image" class="card-img" src=@studio.Logo>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card-body">
+                        <h5 class="card-title"> <b> <a href="/Studio/Show/@studio.Id"> @studio.Name </a></b> </h5>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <form method="post" action="/StudioMovie/Delete">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <input name="Group" value="Movie" style="display:none" />
+                        <input name="MovieId" value="@ViewBag.Movie.Id" style="display:none" />
+                        <input name="StudioId" value="@studio.Id" style="display:none" />
+                        <button class="delete-button" type="submit">Delete studio</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div> <br /><br />
+
+
+    <h4><b>Edit the cast of @ViewBag.Movie.Name:</b></h4><br />
+
+    <div class="row">
+        @foreach (var a in ViewBag.CurrentActors)
+        {
+            <div class="col-sm-4" style="height:100px;">
+                <div class="col-md-3">
+                    <img class="image" class="card-img" src=@a.Actor.Image>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card-body">
+                        <h5 class="card-title"> <b> <a href="/Actor/Show/@a.ActorId"> @a.Actor.Name </a> </b> <br />@a.CharacterName <br /> @a.Role </h5>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <form method="post" action="/ActorMovie/Delete">
+                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                        <input name="Group" value="Movie" style="display:none" />
+                        <input name="MovieId" value="@ViewBag.Movie.Id" style="display:none" />
+                        <input name="ActorId" value="@a.Actor.Id" style="display:none" />
+                        <button class="delete-button" type="submit">Delete actor</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div> <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+
+
+    <h4> Add actors: </h4>
+
+    @foreach (var a in ViewBag.Actors)
+    {
+        <div class="col-sm-4" style="height:100px;">
+            <div class="col-md-3">
+                <img class="image" class="card-img" src=@a.Image>
+            </div>
+
+            <div class="col-md-5">
+                <div class="card-body">
+                    <h5 class="card-title"> <b> <a href="/Actor/Show/@a.Id"> @a.Name </a> </b> </h5>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <a href="/ActorMovie/New/?ActorId=@a.Id&MovieId=@ViewBag.Movie.Id&Group=Movie">
+                    <button class="add-button">Add actor</button>
+                </a>
+            </div>
+        </div>
+    }<br /><br />
+
+</body>

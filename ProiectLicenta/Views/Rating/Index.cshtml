@@ -1,0 +1,142 @@
+﻿<head>
+    <style>
+        .image {
+            height: 80px;
+        }
+
+        .int-button {
+            border: 1px solid #000066;
+            background-color: white;
+            color: #000066;
+            height: 33px;
+        }
+
+            .int-button:hover {
+                background-color: #8080ff;
+                color: white;
+                height: 33px;
+            }
+
+        .delete-button {
+            border: 1px solid darkred;
+            border-radius: 5px;
+            background-color: white;
+            color: darkred;
+        }
+
+            .delete-button:hover {
+                background-color: indianred;
+                color: ghostwhite;
+            }
+
+        .add-button {
+            border: 1px solid #006622;
+            border-radius: 5px;
+            background-color: white;
+            color: #006622;
+        }
+
+            .add-button:hover {
+                background-color: #7bdba6;
+            }
+
+        .Actor {
+            display: none;
+        }
+    </style>
+
+
+    <script type="text/javascript">
+
+        var option = 1;
+
+        function SwitchReviews() {
+            var stylle = ['none','block' ];
+
+            var actors = document.getElementsByClassName("Actor");
+            for (let a of actors) {
+                a.style.display = stylle[option%2]
+            }
+
+            var movies = document.getElementsByClassName("Movie");
+            for (let m of movies) {
+                m.style.display = stylle[(option-1)%2]
+            }
+
+            option = option + 1;
+
+            var message = ['Switch to Actor reviews!', 'Switch to Movie reviews!'];
+            document.getElementById("Switch").innerHTML=message[option%2];
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <h3>Your ratings</h3> <br />
+
+    <button class="int-button" id="Switch" onclick="SwitchReviews()">Switch to Actor reviews!</button><br /><br />
+
+    <div class="Movie">
+        @foreach (var m in ViewBag.MovieRatings)
+        {
+            <div class="card">
+                <div class="col-md-1">
+                    <img class="image" class="card-img" src=@m.Movie.Image>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"> <b> <a href="/Movie/Show/@m.Movie.Id"> @m.Movie.Name </a></b> @m.Value/10 </h5>
+
+                        <p class="card-text">@m.Movie.Description</p>
+                        <p class="card-text"> <small> The average rating is @m.Movie.AverageRating</small> </p>
+
+                    </div>
+                </div>
+
+                <div class="col-md-1">
+                    <div class="add-button" style="font-size:small;height:21px; width:56px;">
+                        <a style="padding-left:5px;padding-top:4px;color:#006622;" href="/Movie/Show/@m.Movie.Id"> Change </a>
+                    </div> <br />
+                    <div class="delete-button" style="font-size:small;height:21px; width:48px;">
+                        <a style="padding-left:5px;padding-top:4px;color:darkred;" href="/Rating/DeleteM/@m.Id">Delete</a>
+                    </div>
+                </div>
+            </div>
+            <br /><br /><br /><br /><br /><br />
+        }
+    </div>
+
+    <div class="Actor">
+        @foreach (var a in ViewBag.ActorRatings)
+        {
+            <div class="card">
+                <div class="col-md-1">
+                    <img class="image" class="card-img" src=@a.Actor.Image>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"> <b> <a href="/Actor/Show/@a.Actor.Id"> @a.Actor.Name </a></b> @a.Value/10 </h5>
+
+                        <p class="card-text">@a.Actor.Description</p>
+                        <p class="card-text"> <small> The average rating is @a.Actor.AverageRating</small> </p>
+
+                    </div>
+                </div>
+
+                <div class="col-md-1">
+                    <div class="add-button" style="font-size:small;height:21px; width:56px;">
+                        <a style="padding-left:5px;padding-top:4px;color:#006622;" href="/Actor/Show/@a.Actor.Id"> Change </a>
+                    </div> <br />
+                    <div class="delete-button" style="font-size:small;height:21px; width:48px;">
+                        <a style="padding-left:5px;padding-top:4px;color:darkred;" href="/Rating/DeleteA/@a.Id">Delete</a> <br />
+                    </div>
+                </div>
+            </div>
+            <br /><br /><br /><br /><br /><br />
+        }
+    </div>
+</body>

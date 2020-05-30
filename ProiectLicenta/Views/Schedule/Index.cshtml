@@ -1,0 +1,104 @@
+﻿<head>
+    <style>
+        .image {
+            height: 80px;
+        }
+
+        .int-button {
+            border: 1px solid #000066;
+            border-radius: 5px;
+            background-color: white;
+            color: #000066;
+            height: 33px;
+        }
+
+            .int-button:hover {
+                background-color: #8080ff;
+                color: white;
+                height: 33px;
+            }
+
+        .delete-button {
+            border: 1px solid darkred;
+            border-radius: 5px;
+            background-color: white;
+            color: darkred;
+        }
+
+            .delete-button:hover {
+                background-color: indianred;
+                color: ghostwhite;
+            }
+
+        .search-button {
+            border: 1px solid #000066;
+            background-color: white;
+            color: #000066;
+            height: 26px;
+        }
+
+            .search-button:hover {
+                background-color: #8080ff;
+                color: ghostwhite;
+            }
+
+        .a {
+            color: dimgrey;
+            font-weight: bold;
+        }
+
+        .title-div {
+            border-bottom: 1px solid darkgrey;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h3>Schedule:</h3> <br />
+
+    @if (@User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+    {
+        <a role="button" class="btn int-button" href="/Schedule/New">Add another movie</a>
+    }
+
+    @if (ViewBag.Ok == "1")
+    {
+        <br /><br /><br />
+        <h5> <b> @ViewBag.Day.DayOfWeek - @ViewBag.Day.Day - @ViewBag.Day.Month </b> </h5><br />
+    }
+
+    @{ }
+
+    @foreach (var s in ViewBag.Schedules)
+    {
+        if (ViewBag.Day.Date != s.BeginDateTime.Date)
+        {
+            <br /><br /><br /><br /><br /><br /><br /><br /><br />
+            <h5> <b> @s.BeginDateTime.DayOfWeek - @s.BeginDateTime.Day - @s.BeginDateTime.Month </b> </h5><br />
+            ViewBag.Day = s.BeginDateTime.Date;
+        }
+
+        <div class="card col-md-4">
+            <div class="col-md-3">
+                <img class="image" class="card-img" src=@s.Movie.Image>
+            </div>
+
+            <div class="col-md-9">
+                <h5 class="card-title">
+                    <b> <a href="/Movie/Show/@s.Movie.Id">@s.Movie.Name</a> </b>
+                    @if (@User.IsInRole("Administrator") || @User.IsInRole("Editor"))
+                    {
+                        <a href="/Schedule/Delete/@s.Id">
+                            <button class="delete-button">Delete</button>
+                        </a> <br />
+                    }
+                </h5>
+
+                <div class="card-body">
+                    <p class="card-text"> Starts at @s.BeginDateTime and lasts for @s.Duration</p>
+                </div>
+            </div>
+        </div>
+    }
+</body>
