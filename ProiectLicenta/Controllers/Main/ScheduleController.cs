@@ -28,11 +28,9 @@ namespace ProiectLicenta.Controllers.Main
 
             List<Schedule> s = schedules.ToList();
             if(s.Count!=0)
-            if (s[0].BeginDateTime.Date == DateTime.Now.Date)
             {
-                ViewBag.Ok = "1";
+                ViewBag.Day = s[0].BeginDateTime;
             }
-            ViewBag.Day = DateTime.Now;
             return View();
         }
 

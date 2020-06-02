@@ -62,23 +62,27 @@
         <a role="button" class="btn int-button" href="/Schedule/New">Add another movie</a>
     }
 
-    @if (ViewBag.Ok == "1")
-    {
-        <br /><br /><br />
-        <h5> <b> @ViewBag.Day.DayOfWeek - @ViewBag.Day.Day - @ViewBag.Day.Month </b> </h5><br />
-    }
+    <br /><br /><br />
+    <h5> <b> @ViewBag.Day.DayOfWeek - @ViewBag.Day.Day - @ViewBag.Day.Month </b> </h5><br />
 
-    @{ }
+    @{
+        var count = 0;
+    }
 
     @foreach (var s in ViewBag.Schedules)
     {
         if (ViewBag.Day.Date != s.BeginDateTime.Date)
         {
-            <br /><br /><br /><br /><br /><br /><br /><br /><br />
+            for (var a = 0; a <= count; a=a+3)
+            {
+                <br /><br /><br /><br /><br />
+            }
+
             <h5> <b> @s.BeginDateTime.DayOfWeek - @s.BeginDateTime.Day - @s.BeginDateTime.Month </b> </h5><br />
             ViewBag.Day = s.BeginDateTime.Date;
+            count = 0;
         }
-
+        count = count + 1;
         <div class="card col-md-4">
             <div class="col-md-3">
                 <img class="image" class="card-img" src=@s.Movie.Image>

@@ -18,7 +18,6 @@ namespace ProiectLicenta.Models.Connection
         [Key, Column(Order = 1)]
         public int StudioId { get; set; }
         public Studio Studio { get; set; }
-
     }
 
     public class StudioMovieDBContext : DbContext
